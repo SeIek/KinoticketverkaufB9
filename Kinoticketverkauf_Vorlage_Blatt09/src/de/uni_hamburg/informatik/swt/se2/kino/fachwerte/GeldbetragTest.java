@@ -32,7 +32,7 @@ public class GeldbetragTest
     }
 
     @Test
-    void testeEqualsundHash()
+    public void testeEqualsundHash()
     {
         assertEquals(_betrag500a.hashCode(), _betrag500b.hashCode());
         assertEquals(_betrag500a.hashCode(), _betrag500a.hashCode());
@@ -41,7 +41,7 @@ public class GeldbetragTest
     }
 
     @Test
-    void testeAddieren()
+    public void testeAddieren()
     {
         assertEquals(_betrag1000, Geldbetrag.addiere(_betrag500a, _betrag500b));
         assertEquals(_betrag1000, Geldbetrag.addiere(_betrag500a, _betrag500a));
@@ -52,7 +52,7 @@ public class GeldbetragTest
     }
 
     @Test
-    void testeSubtrahieren()
+    public void testeSubtrahieren()
     {
         assertEquals(_betrag400,
                 Geldbetrag.subtrahiere(_betrag500a, _betrag100));
@@ -66,7 +66,7 @@ public class GeldbetragTest
     }
 
     @Test
-    void testeMultiplizieren()
+    public void testeMultiplizieren()
     {
         assertEquals(_betrag500a, Geldbetrag.multipliziere(_betrag100, 5));
         assertEquals(_betrag500a, Geldbetrag.multipliziere(_betrag250, 2));
@@ -76,10 +76,15 @@ public class GeldbetragTest
     }
 
     @Test
-    void testKonvertiereToGeldbetrag()
+    public void testKonvertiereToGeldbetrag()
     {
         assertTrue(Geldbetrag.istGeldbetrag("1,00"));
+        assertTrue(Geldbetrag.istGeldbetrag("42,42"));
         assertTrue(Geldbetrag.istGeldbetrag("1"));
+        
+        
+        assertFalse(Geldbetrag.istGeldbetrag("1,0"));
+        assertFalse(Geldbetrag.istGeldbetrag("1,000"));
         assertFalse(Geldbetrag.istGeldbetrag("a"));
         assertFalse(Geldbetrag.istGeldbetrag("1.00"));
 
@@ -88,8 +93,9 @@ public class GeldbetragTest
     }
 
     @Test
-    void testeIstPositiv()
+    public void testeIstPositiv()
     {
-        assertTrue(_betrag500.istPositiv());
+        assertTrue(_betrag500a.istPositiv());
+        assertFalse(_betragMinus100.istPositiv());
     }
 }
