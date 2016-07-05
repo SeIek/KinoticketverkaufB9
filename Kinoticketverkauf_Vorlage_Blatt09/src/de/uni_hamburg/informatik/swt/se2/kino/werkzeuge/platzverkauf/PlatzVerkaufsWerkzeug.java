@@ -24,7 +24,9 @@ import de.uni_hamburg.informatik.swt.se2.kino.werkzeuge.barzahlung.BarzahlungsWe
  */
 public class PlatzVerkaufsWerkzeug
 {
+    // TODO Blatt09 Geldbetrag verwenden
     private int _ausgewaehlterGesamtbetrag;
+    
     // Die aktuelle Vorstellung, deren Plätze angezeigt werden. Kann null sein.
     private Vorstellung _vorstellung;
 
@@ -97,6 +99,7 @@ public class PlatzVerkaufsWerkzeug
     private void fuehreBarzahlungDurch()
     {
         // TODO für Blatt 8: Verkaufen ohne Barzahlungswerkzeug
+        // TODO Blatt09 Geldbetrag verwenden
         _barzahlungsWerkzeug.fuehreBarzahlungDurch(_ausgewaehlterGesamtbetrag);
         if (_barzahlungsWerkzeug.barzahlungErfolgreich())
         {
@@ -122,6 +125,7 @@ public class PlatzVerkaufsWerkzeug
      */
     private void aktualisierePreisanzeige(Set<Platz> plaetze)
     {
+        // TODO Blatt09 Geldbetrag verwenden
         _ausgewaehlterGesamtbetrag = 0;
         if (istVerkaufenMoeglich(plaetze))
         {
