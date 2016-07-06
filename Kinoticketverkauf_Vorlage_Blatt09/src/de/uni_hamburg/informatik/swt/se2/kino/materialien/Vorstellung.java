@@ -3,6 +3,7 @@ package de.uni_hamburg.informatik.swt.se2.kino.materialien;
 import java.util.Set;
 
 import de.uni_hamburg.informatik.swt.se2.kino.fachwerte.Datum;
+import de.uni_hamburg.informatik.swt.se2.kino.fachwerte.Geldbetrag;
 import de.uni_hamburg.informatik.swt.se2.kino.fachwerte.Platz;
 import de.uni_hamburg.informatik.swt.se2.kino.fachwerte.Uhrzeit;
 
@@ -23,9 +24,9 @@ public class Vorstellung
     private Uhrzeit _endzeit;
     private Datum _datum;
 
-    // TODO Blatt09 Geldbetrag verwenden
-    private int _preis;
-    
+    // TODO Blatt09 erledigt
+    private Geldbetrag _preis;
+
     private boolean[][] _verkauft;
     private int _anzahlVerkauftePlaetze;
 
@@ -36,8 +37,53 @@ public class Vorstellung
      * @param film der Film, der in dieser Vorstellung gezeigt wird.
      * @param anfangszeit die Anfangszeit der Vorstellung.
      * @param endzeit die Endzeit der Vorstellung.
-     * @param preis der Verkaufspreis in Eurocent für Karten zu dieser
-     *            Vorstellung.
+     * @param preis der Geldbetrag für den Verkaufspreis zu dieser Vorstellung.
+     * 
+     * @require kinosaal != null
+     * @require film != null
+     * @require anfangszeit != null
+     * @require endzeit != null
+     * @require datum != null
+     * @require preis.istPositiv()
+     * 
+     * @ensure getKinosaal() == kinosaal
+     * @ensure getFilm() == film
+     * @ensure getAnfangszeit() == anfangszeit
+     * @ensure getEndzeit() == endzeit
+     * @ensure getDatum() == datum
+     * @ensure getPreis() == preis
+     */
+    public Vorstellung(Kinosaal kinosaal, Film film, Uhrzeit anfangszeit,
+            Uhrzeit endzeit, Datum datum, Geldbetrag preis)
+    {
+        assert kinosaal != null : "Vorbedingung verletzt: saal != null";
+        assert film != null : "Vorbedingung verletzt: film != null";
+        assert anfangszeit != null : "Vorbedingung verletzt: anfangszeit != null";
+        assert endzeit != null : "Vorbedingung verletzt: endzeit != null";
+        assert datum != null : "Vorbedingung verletzt: datum != null";
+        // TODO Blatt09 Geldbetrag.istPositiv() funktioniert noch nicht
+        // assert preis.istPositiv() : "Vorbedingung verletzt: preis.istPositiv()";
+
+        _kinosaal = kinosaal;
+        _film = film;
+        _anfangszeit = anfangszeit;
+        _endzeit = endzeit;
+        _datum = datum;
+        // TODO Blatt09 erledigt
+        _preis = preis;
+        _verkauft = new boolean[kinosaal.getAnzahlReihen()][kinosaal
+            .getAnzahlSitzeProReihe()];
+        _anzahlVerkauftePlaetze = 0;
+    }
+
+    /**
+     * Erstellt eine neue Vorstellung.
+     * 
+     * @param kinosaal der Kinosaal, in dem die Vorstellung laeuft.
+     * @param film der Film, der in dieser Vorstellung gezeigt wird.
+     * @param anfangszeit die Anfangszeit der Vorstellung.
+     * @param endzeit die Endzeit der Vorstellung.
+     * @param preis der Geldbetrag für den Verkaufspreis zu dieser Vorstellung.
      * 
      * @require kinosaal != null
      * @require film != null
@@ -51,31 +97,16 @@ public class Vorstellung
      * @ensure getAnfangszeit() == anfangszeit
      * @ensure getEndzeit() == endzeit
      * @ensure getDatum() == datum
-     * @ensure getPreis() == preis
+     * @ensure getPreis().getEurocent() == preis
      */
     public Vorstellung(Kinosaal kinosaal, Film film, Uhrzeit anfangszeit,
             Uhrzeit endzeit, Datum datum, int preis)
     {
-        assert kinosaal != null : "Vorbedingung verletzt: saal != null";
-        assert film != null : "Vorbedingung verletzt: film != null";
-        assert anfangszeit != null : "Vorbedingung verletzt: anfangszeit != null";
-        assert endzeit != null : "Vorbedingung verletzt: endzeit != null";
-        assert datum != null : "Vorbedingung verletzt: datum != null";
-        // TODO Blatt09 Geldbetrag verwenden
-        assert preis > 0: "Vorbedingung verletzt: preis > 0";
-
-        _kinosaal = kinosaal;
-        _film = film;
-        _anfangszeit = anfangszeit;
-        _endzeit = endzeit;
-        _datum = datum;
-        // TODO Blatt09 Geldbetrag verwenden
-        _preis = preis;
-        _verkauft = new boolean[kinosaal.getAnzahlReihen()][kinosaal
-                .getAnzahlSitzeProReihe()];
-        _anzahlVerkauftePlaetze = 0;
+        // Vorbedingungen werden vom anderen Konstruktor geprüft
+        this (kinosaal, film, anfangszeit,
+            endzeit, datum, Geldbetrag.getGeldbetrag(preis));
     }
-
+    
     /**
      * Gibt den Kinosaal zurück, in dem diese Vorstellung läuft.
      * 
@@ -127,13 +158,13 @@ public class Vorstellung
     }
 
     /**
-     * Gibt den Verkaufspreis in Eurocent für Karten zu dieser Vorstellung
+     * Gibt den Geldbetrag für Verkaufspreis für Karten zu dieser Vorstellung
      * zurück.
      * 
      */
-    public int getPreis()
+    public Geldbetrag getPreis()
     {
-        // TODO Blatt09 Geldbetrag verwenden
+        // TODO Blatt09 erledigt
         return _preis;
     }
 
@@ -189,16 +220,18 @@ public class Vorstellung
      * 
      * @param plaetze die Sitzplätze.
      * 
-     * @return Gesamtpreis in Eurocent
+     * @return Gesamtpreis als Geldbetrag
      * 
      * @require hatPlaetze(plaetze)
      */
-    public int getPreisFuerPlaetze(Set<Platz> plaetze)
+    public Geldbetrag getPreisFuerPlaetze(Set<Platz> plaetze)
     {
-        assert hatPlaetze(plaetze) : "Vorbedingung verletzt: hatPlaetze(plaetze)";
+        assert hatPlaetze(
+                plaetze) : "Vorbedingung verletzt: hatPlaetze(plaetze)";
 
-        // TODO Blatt09 Geldbetrag verwenden
-        return _preis * plaetze.size();
+        // TODO Blatt09 Geldbetrag.koennenMultipliziertWerden prüfen
+        // if (Geldbetrag.koennenMultipliziertWerden())
+        return Geldbetrag.multipliziere(_preis, plaetze.size());
     }
 
     /**
@@ -213,7 +246,8 @@ public class Vorstellung
      */
     public void verkaufePlatz(Platz platz)
     {
-        assert istVerkaufbar(platz) : "Vorbedingung verletzt: istVerkaufbar(platz)";
+        assert istVerkaufbar(
+                platz) : "Vorbedingung verletzt: istVerkaufbar(platz)";
 
         _verkauft[platz.getReihe()][platz.getSitz()] = true;
         _anzahlVerkauftePlaetze++;
@@ -229,7 +263,8 @@ public class Vorstellung
      */
     public void verkaufePlaetze(Set<Platz> plaetze)
     {
-        assert sindVerkaufbar(plaetze) : "Vorbedingung verletzt: sindVerkaufbar(plaetze)";
+        assert sindVerkaufbar(
+                plaetze) : "Vorbedingung verletzt: sindVerkaufbar(plaetze)";
 
         for (Platz platz : plaetze)
         {
@@ -263,7 +298,8 @@ public class Vorstellung
     public boolean sindVerkaufbar(Set<Platz> plaetze)
     {
         assert plaetze != null : "Vorbedingung verletzt: plaetze != null";
-        assert hatPlaetze(plaetze) : "Vorbedingung verletzt: hatPlaetze(plaetze)";
+        assert hatPlaetze(
+                plaetze) : "Vorbedingung verletzt: hatPlaetze(plaetze)";
 
         boolean result = true;
         for (Platz platz : plaetze)
@@ -285,7 +321,8 @@ public class Vorstellung
      */
     public void stornierePlatz(Platz platz)
     {
-        assert istStornierbar(platz) : "Vorbedingung verletzt: istStornierbar(platz)";
+        assert istStornierbar(
+                platz) : "Vorbedingung verletzt: istStornierbar(platz)";
 
         _verkauft[platz.getReihe()][platz.getSitz()] = false;
         _anzahlVerkauftePlaetze--;
@@ -301,7 +338,8 @@ public class Vorstellung
      */
     public void stornierePlaetze(Set<Platz> plaetze)
     {
-        assert sindStornierbar(plaetze) : "Vorbedingung verletzt: sindStornierbar(plaetze)";
+        assert sindStornierbar(
+                plaetze) : "Vorbedingung verletzt: sindStornierbar(plaetze)";
 
         for (Platz platz : plaetze)
         {
@@ -334,7 +372,8 @@ public class Vorstellung
      */
     public boolean sindStornierbar(Set<Platz> plaetze)
     {
-        assert hatPlaetze(plaetze) : "Vorbedingung verletzt: hatPlaetze(plaetze)";
+        assert hatPlaetze(
+                plaetze) : "Vorbedingung verletzt: hatPlaetze(plaetze)";
 
         boolean result = true;
         for (Platz platz : plaetze)

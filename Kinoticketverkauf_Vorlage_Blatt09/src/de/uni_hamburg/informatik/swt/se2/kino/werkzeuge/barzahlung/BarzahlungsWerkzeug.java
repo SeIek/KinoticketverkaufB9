@@ -7,6 +7,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+import de.uni_hamburg.informatik.swt.se2.kino.fachwerte.Geldbetrag;
 import de.uni_hamburg.informatik.swt.se2.kino.werkzeuge.ObservableSubwerkzeug;
 
 /**
@@ -35,8 +36,8 @@ public class BarzahlungsWerkzeug extends ObservableSubwerkzeug
 
     private BarzahlungsWerkzeugUI _ui;
 
-    // TODO Blatt09 Geldbetrag verwenden
-    private int _preis;
+    // TODO Blatt09 erledigt
+    private Geldbetrag _preis;
     
     private boolean _barzahlungErfolgreich;
     private boolean _ausreichenderGeldbetrag;
@@ -58,9 +59,9 @@ public class BarzahlungsWerkzeug extends ObservableSubwerkzeug
      * 
      * @param preis der einzunehmende Gelbetrag
      */
-    public void fuehreBarzahlungDurch(int preis)
+    public void fuehreBarzahlungDurch(Geldbetrag preis)
     {
-        // TODO Blatt09 Geldbetrag verwenden
+        // TODO Blatt09 erledigt
         _preis = preis;
         _ausreichenderGeldbetrag = false;
         _barzahlungErfolgreich = false;
@@ -170,17 +171,30 @@ public class BarzahlungsWerkzeug extends ObservableSubwerkzeug
         {
             eingabePreis = "0";
         }
-        try
+//        try
+//        {
+//            int eingabeBetrag = Integer.parseInt(eingabePreis);
+//            _ausreichenderGeldbetrag = (eingabeBetrag >= _preis);
+//            int differenz = Math.abs(eingabeBetrag - _preis);
+//            zeigeRestbetrag(differenz);
+//        }
+//        catch (NumberFormatException ignore)
+//        {
+//            _ausreichenderGeldbetrag = false;
+//            zeigeFehlertext();
+//        }
+        // TODO Blatt09 Geldbetrag.istPositiv() funktionieren noch nicht
+        // TODO Blatt09 Geldbetrag.koennenSubtrahiertWerden prüfen
+        if (Geldbetrag.istGeldbetrag(eingabePreis))
         {
-            // TODO Blatt09 Geldbetrag verwenden
-            int eingabeBetrag = Integer.parseInt(eingabePreis);
-            _ausreichenderGeldbetrag = (eingabeBetrag >= _preis);
-            int differenz = Math.abs(eingabeBetrag - _preis);
+            Geldbetrag eingabeBetrag = Geldbetrag.getGeldbetrag(eingabePreis);
+            Geldbetrag differenz = Geldbetrag.subtrahiere(eingabeBetrag, _preis);
+            _ausreichenderGeldbetrag = eingabeBetrag.equals(_preis) 
+                    || differenz.istPositiv();
             zeigeRestbetrag(differenz);
         }
-        catch (NumberFormatException ignore)
+        else
         {
-            _ausreichenderGeldbetrag = false;
             zeigeFehlertext();
         }
         zeigeAusreichenderGeldbetragStatus();
@@ -251,9 +265,10 @@ public class BarzahlungsWerkzeug extends ObservableSubwerkzeug
      * 
      * @param differenz ein eingegebener Betrag
      */
-    private void zeigeRestbetrag(int differenz)
+    private void zeigeRestbetrag(Geldbetrag differenz)
     {
-        _ui.getRestbetragTextfield().setText(differenz + " Eurocent");
+        // TODO Blatt09 erledigt
+        _ui.getRestbetragTextfield().setText(differenz + " Euro");
     }
 
     /**
@@ -261,7 +276,7 @@ public class BarzahlungsWerkzeug extends ObservableSubwerkzeug
      */
     private void zeigePreis()
     {
-        // TODO Blatt09 Geldbetrag verwenden
-        _ui.getPreisTextfield().setText(_preis + " Eurocent");
+        // TODO Blatt09 erledigt
+        _ui.getPreisTextfield().setText(_preis + " Euro");
     }
 }
