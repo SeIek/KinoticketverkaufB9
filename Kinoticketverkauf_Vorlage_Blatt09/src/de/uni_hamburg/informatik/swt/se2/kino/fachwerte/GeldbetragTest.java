@@ -104,6 +104,22 @@ public class GeldbetragTest
         assertFalse(_betragMinus100.istPositiv());
     }
 
+    @Test
+    public void testGeldbetragStringZuGross()
+    {
+        // Mehr als MAX_INT kann schon mal gar nicht gehen
+        assertFalse(Geldbetrag.istGeldbetrag("2147483648"));
+        assertFalse(Geldbetrag.istGeldbetrag("3147483647"));
+        assertFalse(Geldbetrag.istGeldbetrag("2147483648,00"));
+        assertFalse(Geldbetrag.istGeldbetrag("3147483647,00"));
+
+        // Zahlwert in Euro, gespeichert werden aber Cent
+        assertFalse(Geldbetrag.istGeldbetrag("21474837"));
+        assertFalse(Geldbetrag.istGeldbetrag("31474836"));
+        assertFalse(Geldbetrag.istGeldbetrag("21474837,00"));
+        assertFalse(Geldbetrag.istGeldbetrag("31474836,00"));
+    }
+
 //  Falls wir auf Exceptions testen wollen
 //
 //    @Rule
