@@ -4,7 +4,7 @@ package de.uni_hamburg.informatik.swt.se2.kino.fachwerte;
  * Ein Geldbetrag, angegeben in Eurocent.
  * 
  * @author Lina Heinzke, SE2-Gruppe "No Pascha"
- * @version 05.07.2016
+ * @version 07.07.2016
  * 
  */
 public class Geldbetrag
@@ -98,11 +98,6 @@ public class Geldbetrag
         return Geldbetrag.getGeldbetrag(ergebnis);
     }
 
-    private static boolean koennenAddiertWerden(int zahl1, int zahl2)
-    {
-        return true;
-    }
-
     /**
      * Subtrahiert zwei Geldbeträge (betrag1 - betrag2)
      * 
@@ -118,11 +113,6 @@ public class Geldbetrag
         return Geldbetrag.getGeldbetrag(ergebnis);
     }
 
-    private static boolean koennenSubtrahiertWerden(int zahl1, int zahl2)
-    {
-        return true;
-    }
-
     /**
      * Multipliziert einen Geldbetrag mit einem Faktor.
      * 
@@ -136,47 +126,95 @@ public class Geldbetrag
         
         return Geldbetrag.getGeldbetrag(ergebnis);
     }
+    
+    private static boolean koennenAddiertWerden(int zahl1, int zahl2)
+    {
+        try
+        {
+            Math.addExact(zahl1, zahl2);
+            return true;
+        }
+        catch(ArithmeticException e)
+        {
+            return false;
+        }
+    }
+    
+    private static boolean koennenSubtrahiertWerden(int zahl1, int zahl2)
+    {
+        try
+        {
+            Math.subtractExact(zahl1, zahl2);
+            return true;
+        }
+        catch(ArithmeticException e)
+        {
+            return false;
+        }
+    }
 
     private static boolean koennenMultipliziertWerden(int zahl1, int zahl2)
     {
-        return true;
+        try
+        {
+            Math.multiplyExact(zahl1, zahl2);
+            return true;
+        }
+        catch(ArithmeticException e)
+        {
+            return false;
+        }
     }
 
     public int getEuroAnteil()
     {
-        return 0;
+        return _eurocent / 100;
     }
 
     public int getCentAnteil()
     {
-        return 0;
+        return _eurocent % 100;
     }
 
     public int getEurocent()
     {
-        return 0;
+        return _eurocent;
     }
 
     public boolean istPositiv()
     {
-        return false;
+        return _eurocent > 0;
     }
 
     public String toString()
     {
-        return null;
+        return getFormatiertenBetragsString();
+    }
+    
+    /**
+     * Gibt den Eurobetrag im Format [Euro],[Cent] zurück.
+     * 
+     * @ensure result != null
+     */
+    private String getFormatiertenBetragsString()
+    {
+        return String.format("%02d,%02d", getEuroAnteil(), getCentAnteil());
     }
 
     @Override
     public boolean equals(Object obj)
     {
-        return false;
+        return (obj instanceof Geldbetrag) && equals((Geldbetrag) obj);
+    }
+    
+    private boolean equals(Geldbetrag andererBetrag)
+    {
+        return (_eurocent == andererBetrag._eurocent);
     }
 
     @Override
     public int hashCode()
     {
-        return 0;
+        return _eurocent;
     }
-
 }

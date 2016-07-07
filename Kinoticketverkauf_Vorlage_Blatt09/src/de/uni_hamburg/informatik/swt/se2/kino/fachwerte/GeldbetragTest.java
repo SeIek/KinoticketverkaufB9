@@ -4,6 +4,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+//import org.junit.Rule;
+//import org.junit.rules.ExpectedException;
+
 import org.junit.Test;
 
 public class GeldbetragTest
@@ -17,6 +20,7 @@ public class GeldbetragTest
     Geldbetrag _betragMinus100;
     Geldbetrag _betragMinus400;
     Geldbetrag _betragMinus500;
+    Geldbetrag _riesigeZahl;
 
     public GeldbetragTest()
     {
@@ -29,6 +33,7 @@ public class GeldbetragTest
         _betragMinus100 = Geldbetrag.getGeldbetrag(-100);
         _betragMinus400 = Geldbetrag.getGeldbetrag(-400);
         _betragMinus500 = Geldbetrag.getGeldbetrag(-500);
+        _riesigeZahl = Geldbetrag.getGeldbetrag(Integer.MAX_VALUE);
     }
 
     @Test
@@ -98,4 +103,17 @@ public class GeldbetragTest
         assertTrue(_betrag500a.istPositiv());
         assertFalse(_betragMinus100.istPositiv());
     }
+
+//  Falls wir auf Exceptions testen wollen
+//
+//    @Rule
+//    public ExpectedException exception = ExpectedException.none();
+//    
+//    @Test
+//    public void testeOverflow()
+//    {
+//        exception.expect(IllegalArgumentException.class);
+//        [Hier einfügen, was zu einer ArithmeticException führt, also Integer overflow]
+//
+//    }
 }
