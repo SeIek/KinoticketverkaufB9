@@ -38,7 +38,7 @@ public class BarzahlungsWerkzeug extends ObservableSubwerkzeug
 
     // TODO Blatt09 erledigt
     private Geldbetrag _preis;
-    
+
     private boolean _barzahlungErfolgreich;
     private boolean _ausreichenderGeldbetrag;
 
@@ -93,23 +93,25 @@ public class BarzahlungsWerkzeug extends ObservableSubwerkzeug
      */
     private void registriereAbbrechenAktionen()
     {
-        _ui.getAbbrechenButton().addActionListener(new ActionListener()
-        {
-            @Override
-            public void actionPerformed(ActionEvent e)
+        _ui.getAbbrechenButton()
+            .addActionListener(new ActionListener()
             {
-                bezahlenNichtErfolgreich();
-            }
+                @Override
+                public void actionPerformed(ActionEvent e)
+                {
+                    bezahlenNichtErfolgreich();
+                }
 
-        });
-        _ui.getDialog().addWindowListener(new WindowAdapter()
-        {
-            @Override
-            public void windowClosed(WindowEvent e)
+            });
+        _ui.getDialog()
+            .addWindowListener(new WindowAdapter()
             {
-                bezahlenNichtErfolgreich();
-            }
-        });
+                @Override
+                public void windowClosed(WindowEvent e)
+                {
+                    bezahlenNichtErfolgreich();
+                }
+            });
     }
 
     /**
@@ -118,14 +120,15 @@ public class BarzahlungsWerkzeug extends ObservableSubwerkzeug
      */
     private void registriereOKAktion()
     {
-        _ui.getGeldErhaltenButton().addActionListener(new ActionListener()
-        {
-            @Override
-            public void actionPerformed(ActionEvent e)
+        _ui.getGeldErhaltenButton()
+            .addActionListener(new ActionListener()
             {
-                bezahlenErfolgreich();
-            }
-        });
+                @Override
+                public void actionPerformed(ActionEvent e)
+                {
+                    bezahlenErfolgreich();
+                }
+            });
     }
 
     /**
@@ -134,27 +137,29 @@ public class BarzahlungsWerkzeug extends ObservableSubwerkzeug
      */
     private void registriereGeyahltTextfieldEingabeAktion()
     {
-        _ui.getGezahltTextfield().addKeyListener(new KeyAdapter()
-        {
-            @Override
-            public void keyReleased(KeyEvent e)
+        _ui.getGezahltTextfield()
+            .addKeyListener(new KeyAdapter()
             {
-                switch (e.getKeyCode())
+                @Override
+                public void keyReleased(KeyEvent e)
                 {
-                case KeyEvent.VK_ESCAPE:
-                    bezahlenNichtErfolgreich();
-                    break;
-                case KeyEvent.VK_ENTER:
-                    if (_ausreichenderGeldbetrag)
+                    switch (e.getKeyCode())
                     {
-                        bezahlenErfolgreich();
+                    case KeyEvent.VK_ESCAPE:
+                        bezahlenNichtErfolgreich();
+                        break;
+                    case KeyEvent.VK_ENTER:
+                        if (_ausreichenderGeldbetrag)
+                        {
+                            bezahlenErfolgreich();
+                        }
+                        break;
+                    default:
+                        reagiereAufEingabeText(_ui.getGezahltTextfield()
+                            .getText());
                     }
-                    break;
-                default:
-                    reagiereAufEingabeText(_ui.getGezahltTextfield().getText());
                 }
-            }
-        });
+            });
     }
 
     /**
@@ -171,27 +176,35 @@ public class BarzahlungsWerkzeug extends ObservableSubwerkzeug
         {
             eingabePreis = "0";
         }
-//        try
-//        {
-//            int eingabeBetrag = Integer.parseInt(eingabePreis);
-//            _ausreichenderGeldbetrag = (eingabeBetrag >= _preis);
-//            int differenz = Math.abs(eingabeBetrag - _preis);
-//            zeigeRestbetrag(differenz);
-//        }
-//        catch (NumberFormatException ignore)
-//        {
-//            _ausreichenderGeldbetrag = false;
-//            zeigeFehlertext();
-//        }
-        // TODO Blatt09 Geldbetrag.istPositiv() funktionieren noch nicht
+        //        try
+        //        {
+        //            int eingabeBetrag = Integer.parseInt(eingabePreis);
+        //            _ausreichenderGeldbetrag = (eingabeBetrag >= _preis);
+        //            int differenz = Math.abs(eingabeBetrag - _preis);
+        //            zeigeRestbetrag(differenz);
+        //        }
+        //        catch (NumberFormatException ignore)
+        //        {
+        //            _ausreichenderGeldbetrag = false;
+        //            zeigeFehlertext();
+        //        }
         // TODO Blatt09 Geldbetrag.koennenSubtrahiertWerden prüfen
         if (Geldbetrag.istGeldbetrag(eingabePreis))
         {
             Geldbetrag eingabeBetrag = Geldbetrag.getGeldbetrag(eingabePreis);
-            Geldbetrag differenz = Geldbetrag.subtrahiere(eingabeBetrag, _preis);
-            _ausreichenderGeldbetrag = eingabeBetrag.equals(_preis) 
+            //            if (eingabeBetrag.istPositiv()
+            //                    || eingabeBetrag.equals(Geldbetrag.getGeldbetrag(0)))
+            //            {
+            Geldbetrag differenz = Geldbetrag.subtrahiere(eingabeBetrag,
+                    _preis);
+            _ausreichenderGeldbetrag = eingabeBetrag.equals(_preis)
                     || differenz.istPositiv();
             zeigeRestbetrag(differenz);
+            //            }
+            //            else
+            //            {
+            //                zeigeFehlertext();
+            //            }
         }
         else
         {
@@ -234,7 +247,8 @@ public class BarzahlungsWerkzeug extends ObservableSubwerkzeug
      */
     private void loescheGezahltenBetrag()
     {
-        _ui.getGezahltTextfield().setText("");
+        _ui.getGezahltTextfield()
+            .setText("");
     }
 
     /**
@@ -244,7 +258,8 @@ public class BarzahlungsWerkzeug extends ObservableSubwerkzeug
      */
     private void zeigeAusreichenderGeldbetragStatus()
     {
-        _ui.getGeldErhaltenButton().setEnabled(_ausreichenderGeldbetrag);
+        _ui.getGeldErhaltenButton()
+            .setEnabled(_ausreichenderGeldbetrag);
         _ui.markiereGezahltTextfield(_ausreichenderGeldbetrag);
         _ui.markiereRestbetragTextfield(_ausreichenderGeldbetrag);
     }
@@ -257,7 +272,8 @@ public class BarzahlungsWerkzeug extends ObservableSubwerkzeug
      */
     private void zeigeFehlertext()
     {
-        _ui.getRestbetragTextfield().setText(" Err ");
+        _ui.getRestbetragTextfield()
+            .setText(" Err ");
     }
 
     /**
@@ -268,7 +284,8 @@ public class BarzahlungsWerkzeug extends ObservableSubwerkzeug
     private void zeigeRestbetrag(Geldbetrag differenz)
     {
         // TODO Blatt09 erledigt
-        _ui.getRestbetragTextfield().setText(differenz + " Euro");
+        _ui.getRestbetragTextfield()
+            .setText(differenz + " Euro");
     }
 
     /**
@@ -277,6 +294,7 @@ public class BarzahlungsWerkzeug extends ObservableSubwerkzeug
     private void zeigePreis()
     {
         // TODO Blatt09 erledigt
-        _ui.getPreisTextfield().setText(_preis + " Euro");
+        _ui.getPreisTextfield()
+            .setText(_preis + " Euro");
     }
 }

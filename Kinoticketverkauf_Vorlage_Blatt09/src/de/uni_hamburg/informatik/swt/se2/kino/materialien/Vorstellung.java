@@ -61,8 +61,7 @@ public class Vorstellung
         assert anfangszeit != null : "Vorbedingung verletzt: anfangszeit != null";
         assert endzeit != null : "Vorbedingung verletzt: endzeit != null";
         assert datum != null : "Vorbedingung verletzt: datum != null";
-        // TODO Blatt09 Geldbetrag.istPositiv() funktioniert noch nicht
-        // assert preis.istPositiv() : "Vorbedingung verletzt: preis.istPositiv()";
+        assert preis.istPositiv() : "Vorbedingung verletzt: preis.istPositiv()";
 
         _kinosaal = kinosaal;
         _film = film;
