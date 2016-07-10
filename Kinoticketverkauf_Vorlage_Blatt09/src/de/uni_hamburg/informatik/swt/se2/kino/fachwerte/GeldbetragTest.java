@@ -10,12 +10,15 @@ import org.junit.Test;
 public class GeldbetragTest
 {
     Geldbetrag _betrag100;
+    Geldbetrag _betrag110;
+    Geldbetrag _betrag220;
     Geldbetrag _betrag250;
     Geldbetrag _betrag500a;
     Geldbetrag _betrag500b;
     Geldbetrag _betrag400;
     Geldbetrag _betrag1000;
     Geldbetrag _betragMinus100;
+    Geldbetrag _betragMinus110;
     Geldbetrag _betragMinus250;
     Geldbetrag _betragMinus400;
     Geldbetrag _betragMinus500;
@@ -24,12 +27,15 @@ public class GeldbetragTest
     public GeldbetragTest()
     {
         _betrag100 = Geldbetrag.getGeldbetrag(100);
+        _betrag110 = Geldbetrag.getGeldbetrag(110);
+        _betrag220 = Geldbetrag.getGeldbetrag(220);
         _betrag250 = Geldbetrag.getGeldbetrag(250);
         _betrag400 = Geldbetrag.getGeldbetrag(400);
         _betrag500a = Geldbetrag.getGeldbetrag(500);
         _betrag500b = Geldbetrag.getGeldbetrag(500);
         _betrag1000 = Geldbetrag.getGeldbetrag(1000);
         _betragMinus100 = Geldbetrag.getGeldbetrag(-100);
+        _betragMinus110 = Geldbetrag.getGeldbetrag(-110);
         _betragMinus250 = Geldbetrag.getGeldbetrag(-250);
         _betragMinus400 = Geldbetrag.getGeldbetrag(-400);
         _betragMinus500 = Geldbetrag.getGeldbetrag(-500);
@@ -54,7 +60,8 @@ public class GeldbetragTest
         assertEquals(_betrag250, Geldbetrag.addiere(_betragMinus250, _betrag500a));
         assertEquals(_betrag400,
                 Geldbetrag.addiere(_betrag500a, _betragMinus100));
-
+        assertEquals(_betrag220, Geldbetrag.addiere(_betrag110, _betrag110));
+        assertEquals(_betrag110, Geldbetrag.addiere(_betrag220, _betragMinus110));
     }
 
     @Test
@@ -70,7 +77,8 @@ public class GeldbetragTest
                 Geldbetrag.subtrahiere(_betrag500a, _betragMinus500));
         assertEquals(_betragMinus400,
                 Geldbetrag.subtrahiere(_betrag100, _betrag500a));
-
+        assertEquals(_betrag110, Geldbetrag.subtrahiere(_betrag220, _betrag110));
+        assertEquals(_betrag220, Geldbetrag.subtrahiere(_betrag110, _betragMinus110));
     }
 
     @Test
@@ -80,6 +88,8 @@ public class GeldbetragTest
         assertEquals(_betrag500a, Geldbetrag.multipliziere(_betrag250, 2));
         assertEquals(_betragMinus500, Geldbetrag.multipliziere(_betrag100, -5));
         assertEquals(_betragMinus250, Geldbetrag.multipliziere(_betrag250, -1));
+        assertEquals(_betrag220, Geldbetrag.multipliziere(_betrag110, 2));
+        assertEquals(_betragMinus110, Geldbetrag.multipliziere(_betrag110, -1));
         assertEquals(_betragMinus500,
                 Geldbetrag.multipliziere(_betragMinus100, 5));
     }
@@ -145,7 +155,9 @@ public class GeldbetragTest
     public void testeToString()
     {
         assertEquals("1,00", _betrag100.toString());
+        assertEquals("1,10", _betrag110.toString());
         assertEquals("-1,00", _betragMinus100.toString());
+        assertEquals("-1,10", _betragMinus110.toString());
         assertEquals("10,00", _betrag1000.toString());
         assertEquals("2,50", _betrag250.toString());
         assertEquals("-2,50", _betragMinus250.toString());
@@ -163,6 +175,8 @@ public class GeldbetragTest
         assertFalse(Geldbetrag.istGeldbetrag("quatsch"));
         assertFalse(Geldbetrag.istGeldbetrag("123 quatsch"));
         assertFalse(Geldbetrag.istGeldbetrag("quatsch 456"));
+        assertFalse(Geldbetrag.istGeldbetrag(",01"));
+        assertFalse(Geldbetrag.istGeldbetrag("-,01"));
         assertTrue(Geldbetrag.istGeldbetrag("0"));
         assertTrue(Geldbetrag.istGeldbetrag("0,00"));
         assertTrue(Geldbetrag.istGeldbetrag("1234"));
