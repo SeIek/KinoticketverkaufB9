@@ -113,12 +113,16 @@ public class GeldbetragTest
     @Test
     public void testeGetter()
     {
+        // Wenn nur die Anteile abgefragt werden, kommt immer der Betrag zurück. getEurocent hingegen liefert den korrekten Integer, 
+        // positiv oder negativ. 
+        // Ob am Ende ein minus vor dem Geldbetrag steht, wird in ToString ermittelt.
+        
         assertEquals(100, _betrag100.getEurocent());
         assertEquals(1, _betrag100.getEuroAnteil());
         assertEquals(0, _betrag100.getCentAnteil());
         
         assertEquals(-100, _betragMinus100.getEurocent());
-        assertEquals(-1, _betragMinus100.getEuroAnteil());
+        assertEquals(1, _betragMinus100.getEuroAnteil());
         assertEquals(0, _betragMinus100.getCentAnteil());
         
         assertEquals(250, _betrag250.getEurocent());
@@ -127,14 +131,14 @@ public class GeldbetragTest
         
         // Lässt sich hier drüber streiten was denn erwartet wird?!
         assertEquals(-250, _betragMinus250.getEurocent());
-        assertEquals(-2, _betragMinus250.getEuroAnteil());
-        assertEquals(-50, _betragMinus250.getCentAnteil());
+        assertEquals(2, _betragMinus250.getEuroAnteil());
+        assertEquals(50, _betragMinus250.getCentAnteil());
 
         // Hier scheint es dagegen eher klar zu werden
         Geldbetrag m012 = Geldbetrag.getGeldbetrag(-12);
         assertEquals(-12, m012.getEurocent());
         assertEquals(0, m012.getEuroAnteil());
-        assertEquals(-12, m012.getCentAnteil());
+        assertEquals(12, m012.getCentAnteil());
     }
     
     @Test

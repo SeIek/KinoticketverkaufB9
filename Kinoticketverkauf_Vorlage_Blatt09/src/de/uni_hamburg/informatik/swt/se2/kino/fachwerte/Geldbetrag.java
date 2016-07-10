@@ -53,8 +53,7 @@ public class Geldbetrag
      */
     public static boolean istGeldbetrag(String euroString)
     {
-        return euroString.matches("[+-]?\\d+,\\d{2}")
-                || euroString.matches("[+-]?\\d+");
+        return euroString.matches("^[+-]?\\d{0,7},\\d{2}$") || euroString.matches("[+-]?\\d{1,7}");
     }
 
     /**
@@ -168,12 +167,12 @@ public class Geldbetrag
 
     public int getEuroAnteil()
     {
-        return _eurocent / 100;
+        return Math.abs(_eurocent / 100);
     }
 
     public int getCentAnteil()
     {
-        return _eurocent % 100;
+        return Math.abs(_eurocent % 100);
     }
 
     public int getEurocent()
@@ -198,7 +197,10 @@ public class Geldbetrag
      */
     private String getFormatiertenBetragsString()
     {
-        return String.format("%02d,%02d", getEuroAnteil(), getCentAnteil());
+        String vorzeichen = "";
+        if (_eurocent < 0) vorzeichen = "-";
+        
+        return String.format("%s%d,%02d", vorzeichen, getEuroAnteil(), getCentAnteil());
     }
 
     @Override
