@@ -102,10 +102,10 @@ public class Vorstellung
             Uhrzeit endzeit, Datum datum, int preis)
     {
         // Vorbedingungen werden vom anderen Konstruktor geprüft
-        this (kinosaal, film, anfangszeit,
-            endzeit, datum, Geldbetrag.getGeldbetrag(preis));
+        this(kinosaal, film, anfangszeit, endzeit, datum,
+                Geldbetrag.getGeldbetrag(preis));
     }
-    
+
     /**
      * Gibt den Kinosaal zurück, in dem diese Vorstellung läuft.
      * 
@@ -222,14 +222,16 @@ public class Vorstellung
      * @return Gesamtpreis als Geldbetrag
      * 
      * @require hatPlaetze(plaetze)
+     * @require Geldbetrag.koennenMultipliziertWerden(getPreis(), plaetze.size())
      */
     public Geldbetrag getPreisFuerPlaetze(Set<Platz> plaetze)
     {
         assert hatPlaetze(
                 plaetze) : "Vorbedingung verletzt: hatPlaetze(plaetze)";
+        assert Geldbetrag.koennenMultipliziertWerden(_preis, plaetze
+            .size()) : "Vorbedingung verletzt : Geldbetrag.koennenMultipliziertWerden(_preis, plaetze.size())";
 
-        // TODO Blatt09 Geldbetrag.koennenMultipliziertWerden prüfen
-        // if (Geldbetrag.koennenMultipliziertWerden())
+        // TODO Blatt09 erledigt
         return Geldbetrag.multipliziere(_preis, plaetze.size());
     }
 

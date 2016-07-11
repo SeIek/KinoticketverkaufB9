@@ -188,27 +188,33 @@ public class BarzahlungsWerkzeug extends ObservableSubwerkzeug
         //            _ausreichenderGeldbetrag = false;
         //            zeigeFehlertext();
         //        }
-        // TODO Blatt09 Geldbetrag.koennenSubtrahiertWerden prüfen
+        // TODO Blatt09 erledigt
         if (Geldbetrag.istGeldbetrag(eingabePreis))
         {
             Geldbetrag eingabeBetrag = Geldbetrag.getGeldbetrag(eingabePreis);
-            //            if (eingabeBetrag.istPositiv()
-            //                    || eingabeBetrag.equals(Geldbetrag.getGeldbetrag(0)))
-            //            {
-            Geldbetrag differenz = Geldbetrag.subtrahiere(eingabeBetrag,
-                    _preis);
-            _ausreichenderGeldbetrag = eingabeBetrag.equals(_preis)
-                    || differenz.istPositiv();
-            zeigeRestbetrag(differenz);
-            //            }
-            //            else
-            //            {
-            //                zeigeFehlertext();
-            //            }
+            if (Geldbetrag.koennenSubtrahiertWerden(eingabeBetrag, _preis))
+            {
+                Geldbetrag differenz = Geldbetrag.subtrahiere(eingabeBetrag,
+                        _preis);
+                _ausreichenderGeldbetrag = eingabeBetrag.equals(_preis)
+                        || differenz.istPositiv();
+                if (!differenz.istPositiv()
+                        && Geldbetrag.koennenMultipliziertWerden(differenz, -1))
+                {
+                    differenz = Geldbetrag.multipliziere(differenz, -1);
+                }
+                zeigeRestbetrag(differenz);
+            }
+            else
+            {
+                zeigeFehlertext();
+                _ausreichenderGeldbetrag = false;
+            }
         }
         else
         {
             zeigeFehlertext();
+            _ausreichenderGeldbetrag = false;
         }
         zeigeAusreichenderGeldbetragStatus();
     }

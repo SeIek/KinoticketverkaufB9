@@ -1,5 +1,9 @@
 package de.uni_hamburg.informatik.swt.se2.kino.fachwerte;
 
+import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * Ein Geldbetrag, angegeben in Eurocent.
  * 
@@ -10,6 +14,9 @@ package de.uni_hamburg.informatik.swt.se2.kino.fachwerte;
 public class Geldbetrag
 {
     private final int _eurocent;
+    private static HashMap<Integer, Geldbetrag> _hashmap = new HashMap<Integer, Geldbetrag>();
+    private static Pattern _pattern = Pattern
+        .compile("([+-]?\\d{1,7})(,(\\d{2}))?");
 
     private Geldbetrag(int eurocent)
     {
@@ -25,7 +32,14 @@ public class Geldbetrag
      */
     public static Geldbetrag getGeldbetrag(int eurocent)
     {
-        return new Geldbetrag(eurocent);
+        Geldbetrag value = _hashmap.get(eurocent);
+        if (value == null)
+        {
+            value = new Geldbetrag(eurocent);
+            _hashmap.put(eurocent, value);
+            //System.out.println("Hashmap + " + value);
+        }
+        return value;
     }
 
     /**
@@ -37,7 +51,8 @@ public class Geldbetrag
      */
     public static Geldbetrag getGeldbetrag(String euroString)
     {
-        assert istGeldbetrag(euroString) : "Vorbedingung verletzt: istGeldbetrag(euroString)";
+        assert istGeldbetrag(
+                euroString) : "Vorbedingung verletzt: istGeldbetrag(euroString)";
 
         int betrag = parseBetrag(euroString);
 
@@ -53,7 +68,10 @@ public class Geldbetrag
      */
     public static boolean istGeldbetrag(String euroString)
     {
-        return euroString.matches("^[+-]?\\d{0,7},\\d{2}$") || euroString.matches("[+-]?\\d{1,7}");
+        return _pattern.matcher(euroString)
+            .matches();
+        //        return euroString.matches("[+-]?\\d{1,7},\\d{2}")
+        //                || euroString.matches("[+-]?\\d{1,7}");
     }
 
     /**
@@ -63,21 +81,37 @@ public class Geldbetrag
      */
     private static int parseBetrag(String euroString)
     {
-        assert istGeldbetrag(euroString) : "Vorbedingung verletzt: istGeldbetrag(euroString)";
+        assert istGeldbetrag(
+                euroString) : "Vorbedingung verletzt: istGeldbetrag(euroString)";
 
         int betrag;
 
-        if (euroString.contains(","))
+        //        if (euroString.contains(","))
+        //        {
+        Matcher matcher = _pattern.matcher(euroString);
+        matcher.find();
+        int euro = Integer.parseInt(matcher.group(1));
+        int cent = 0;
+        if (matcher.group(3) != null)
         {
-            String[] euroCent = euroString.split(",");
-            int euro = Integer.parseInt(euroCent[0]);
-            int cent = Integer.parseInt(euroCent[1]);
-            betrag = euro * 100 + cent;
+            cent = Integer.parseInt(matcher.group(3));
+        }
+        //            String[] euroCent = euroString.split(",");
+        //            int euro = Integer.parseInt(euroCent[0]);
+        //            int cent = Integer.parseInt(euroCent[1]);
+        if (euro < 0)
+        {
+            betrag = euro * 100 - cent;
         }
         else
         {
-            betrag = Integer.parseInt(euroString) * 100;
+            betrag = euro * 100 + cent;
         }
+        //        }
+        //        else
+        //        {
+        //            betrag = Integer.parseInt(euroString) * 100;
+        //        }
 
         return betrag;
     }
@@ -89,11 +123,11 @@ public class Geldbetrag
      */
     public static Geldbetrag addiere(Geldbetrag betrag1, Geldbetrag betrag2)
     {
-        assert koennenAddiertWerden(betrag1.getEurocent(),
-                betrag2.getEurocent()) : "Vorbedingung verletzt: koennenAddiertWerden(betrag1.getEurocent(), betrag2.getEurocent())";
-        
+        assert koennenAddiertWerden(betrag1,
+                betrag2) : "Vorbedingung verletzt: koennenAddiertWerden(betrag1.getEurocent(), betrag2.getEurocent())";
+
         int ergebnis = betrag1.getEurocent() + betrag2.getEurocent();
-        
+
         return Geldbetrag.getGeldbetrag(ergebnis);
     }
 
@@ -104,11 +138,11 @@ public class Geldbetrag
      */
     public static Geldbetrag subtrahiere(Geldbetrag betrag1, Geldbetrag betrag2)
     {
-        assert koennenSubtrahiertWerden(betrag1.getEurocent(),
-                betrag2.getEurocent()) : "Vorbedingung verletzt: koennenSubtrahiertWerden(betrag1.getEurocent(), betrag2.getEurocent())";
+        assert koennenSubtrahiertWerden(betrag1,
+                betrag2) : "Vorbedingung verletzt: koennenSubtrahiertWerden(betrag1.getEurocent(), betrag2.getEurocent())";
 
         int ergebnis = betrag1.getEurocent() - betrag2.getEurocent();
-        
+
         return Geldbetrag.getGeldbetrag(ergebnis);
     }
 
@@ -119,47 +153,69 @@ public class Geldbetrag
      */
     public static Geldbetrag multipliziere(Geldbetrag betrag, int faktor)
     {
-        assert koennenMultipliziertWerden(betrag.getEurocent(), faktor) : "Vorbedingung verletzt: koennenMultipliziertWerden(betrag1.getEurocent(), faktor)";
+        assert koennenMultipliziertWerden(betrag,
+                faktor) : "Vorbedingung verletzt: koennenMultipliziertWerden(betrag1.getEurocent(), faktor)";
 
         int ergebnis = faktor * betrag.getEurocent();
-        
+
         return Geldbetrag.getGeldbetrag(ergebnis);
     }
-    
-    private static boolean koennenAddiertWerden(int zahl1, int zahl2)
+
+    /**
+     * Prüft ob die beiden Zahlen addiert werden können
+     * @param betrag1 Summand 1
+     * @param betrag2 Summand 2
+     * @return Siehe oben
+     */
+    public static boolean koennenAddiertWerden(Geldbetrag betrag1,
+            Geldbetrag betrag2)
     {
         try
         {
-            Math.addExact(zahl1, zahl2);
+            Math.addExact(betrag1.getEurocent(), betrag2.getEurocent());
             return true;
         }
-        catch(ArithmeticException e)
-        {
-            return false;
-        }
-    }
-    
-    private static boolean koennenSubtrahiertWerden(int zahl1, int zahl2)
-    {
-        try
-        {
-            Math.subtractExact(zahl1, zahl2);
-            return true;
-        }
-        catch(ArithmeticException e)
+        catch (ArithmeticException e)
         {
             return false;
         }
     }
 
-    private static boolean koennenMultipliziertWerden(int zahl1, int zahl2)
+    /**
+     * Prüft ob die beiden Zahlen subtrahiert werden können
+     * @param betrag1 Minuend
+     * @param betrag2 Subtrahend
+     * @return Siehe oben
+     */
+    public static boolean koennenSubtrahiertWerden(Geldbetrag betrag1,
+            Geldbetrag betrag2)
     {
         try
         {
-            Math.multiplyExact(zahl1, zahl2);
+            Math.subtractExact(betrag1.getEurocent(), betrag2.getEurocent());
             return true;
         }
-        catch(ArithmeticException e)
+        catch (ArithmeticException e)
+        {
+            return false;
+        }
+    }
+
+    /**
+     * Prüft ob die beiden Zahlen subtrahiert werden können
+     * @param betrag Der zu multiplizierende Geldbetrag
+     * @param faktor Der Faktor
+     * @return Siehe oben
+     */
+    public static boolean koennenMultipliziertWerden(Geldbetrag betrag,
+            int faktor)
+    {
+        try
+        {
+            Math.multiplyExact(betrag.getEurocent(), faktor);
+            return true;
+        }
+        catch (ArithmeticException e)
         {
             return false;
         }
@@ -189,7 +245,7 @@ public class Geldbetrag
     {
         return getFormatiertenBetragsString();
     }
-    
+
     /**
      * Gibt den Eurobetrag im Format [Euro],[Cent] zurück.
      * 
@@ -199,8 +255,9 @@ public class Geldbetrag
     {
         String vorzeichen = "";
         if (_eurocent < 0) vorzeichen = "-";
-        
-        return String.format("%s%d,%02d", vorzeichen, getEuroAnteil(), getCentAnteil());
+
+        return String.format("%s%d,%02d", vorzeichen, getEuroAnteil(),
+                getCentAnteil());
     }
 
     @Override
@@ -208,7 +265,7 @@ public class Geldbetrag
     {
         return (obj instanceof Geldbetrag) && equals((Geldbetrag) obj);
     }
-    
+
     private boolean equals(Geldbetrag andererBetrag)
     {
         return (_eurocent == andererBetrag._eurocent);

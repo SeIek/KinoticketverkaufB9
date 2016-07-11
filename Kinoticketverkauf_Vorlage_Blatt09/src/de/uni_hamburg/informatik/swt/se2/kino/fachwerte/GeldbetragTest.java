@@ -1,6 +1,8 @@
 package de.uni_hamburg.informatik.swt.se2.kino.fachwerte;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 //import org.junit.Rule;
 //import org.junit.rules.ExpectedException;
@@ -57,11 +59,13 @@ public class GeldbetragTest
         assertEquals(_betrag1000, Geldbetrag.addiere(_betrag500a, _betrag500b));
         assertEquals(_betrag1000, Geldbetrag.addiere(_betrag500a, _betrag500a));
         assertEquals(_betrag500a, Geldbetrag.addiere(_betrag250, _betrag250));
-        assertEquals(_betrag250, Geldbetrag.addiere(_betragMinus250, _betrag500a));
+        assertEquals(_betrag250,
+                Geldbetrag.addiere(_betragMinus250, _betrag500a));
         assertEquals(_betrag400,
                 Geldbetrag.addiere(_betrag500a, _betragMinus100));
         assertEquals(_betrag220, Geldbetrag.addiere(_betrag110, _betrag110));
-        assertEquals(_betrag110, Geldbetrag.addiere(_betrag220, _betragMinus110));
+        assertEquals(_betrag110,
+                Geldbetrag.addiere(_betrag220, _betragMinus110));
     }
 
     @Test
@@ -77,8 +81,10 @@ public class GeldbetragTest
                 Geldbetrag.subtrahiere(_betrag500a, _betragMinus500));
         assertEquals(_betragMinus400,
                 Geldbetrag.subtrahiere(_betrag100, _betrag500a));
-        assertEquals(_betrag110, Geldbetrag.subtrahiere(_betrag220, _betrag110));
-        assertEquals(_betrag220, Geldbetrag.subtrahiere(_betrag110, _betragMinus110));
+        assertEquals(_betrag110,
+                Geldbetrag.subtrahiere(_betrag220, _betrag110));
+        assertEquals(_betrag220,
+                Geldbetrag.subtrahiere(_betrag110, _betragMinus110));
     }
 
     @Test
@@ -100,16 +106,17 @@ public class GeldbetragTest
         assertTrue(Geldbetrag.istGeldbetrag("1,00"));
         assertTrue(Geldbetrag.istGeldbetrag("42,42"));
         assertTrue(Geldbetrag.istGeldbetrag("1"));
-        
-        
+
         assertFalse(Geldbetrag.istGeldbetrag("1,0"));
         assertFalse(Geldbetrag.istGeldbetrag("1,000"));
         assertFalse(Geldbetrag.istGeldbetrag("a"));
         assertFalse(Geldbetrag.istGeldbetrag("1.00"));
 
         assertEquals(_betrag100, Geldbetrag.getGeldbetrag("1,00"));
+        assertEquals(_betrag110, Geldbetrag.getGeldbetrag("1,10"));
         assertEquals(_betrag100, Geldbetrag.getGeldbetrag("1"));
         assertEquals(_betragMinus100, Geldbetrag.getGeldbetrag("-1,00"));
+        assertEquals(_betragMinus110, Geldbetrag.getGeldbetrag("-1,10"));
         assertEquals(_betragMinus100, Geldbetrag.getGeldbetrag("-1"));
     }
 
@@ -126,19 +133,19 @@ public class GeldbetragTest
         // Wenn nur die Anteile abgefragt werden, kommt immer der Betrag zurück. getEurocent hingegen liefert den korrekten Integer, 
         // positiv oder negativ. 
         // Ob am Ende ein minus vor dem Geldbetrag steht, wird in ToString ermittelt.
-        
+
         assertEquals(100, _betrag100.getEurocent());
         assertEquals(1, _betrag100.getEuroAnteil());
         assertEquals(0, _betrag100.getCentAnteil());
-        
+
         assertEquals(-100, _betragMinus100.getEurocent());
         assertEquals(1, _betragMinus100.getEuroAnteil());
         assertEquals(0, _betragMinus100.getCentAnteil());
-        
+
         assertEquals(250, _betrag250.getEurocent());
         assertEquals(2, _betrag250.getEuroAnteil());
         assertEquals(50, _betrag250.getCentAnteil());
-        
+
         // Lässt sich hier drüber streiten was denn erwartet wird?!
         assertEquals(-250, _betragMinus250.getEurocent());
         assertEquals(2, _betragMinus250.getEuroAnteil());
@@ -150,7 +157,7 @@ public class GeldbetragTest
         assertEquals(0, m012.getEuroAnteil());
         assertEquals(12, m012.getCentAnteil());
     }
-    
+
     @Test
     public void testeToString()
     {
@@ -161,13 +168,18 @@ public class GeldbetragTest
         assertEquals("10,00", _betrag1000.toString());
         assertEquals("2,50", _betrag250.toString());
         assertEquals("-2,50", _betragMinus250.toString());
-        assertEquals("0,12", Geldbetrag.getGeldbetrag(12).toString());
-        assertEquals("-0,12", Geldbetrag.getGeldbetrag(-12).toString());
-        assertEquals("1,01", Geldbetrag.getGeldbetrag(101).toString());
-        assertEquals("-1,01", Geldbetrag.getGeldbetrag(-101).toString());
-        assertEquals("123456,78", Geldbetrag.getGeldbetrag(12345678).toString());
+        assertEquals("0,12", Geldbetrag.getGeldbetrag(12)
+            .toString());
+        assertEquals("-0,12", Geldbetrag.getGeldbetrag(-12)
+            .toString());
+        assertEquals("1,01", Geldbetrag.getGeldbetrag(101)
+            .toString());
+        assertEquals("-1,01", Geldbetrag.getGeldbetrag(-101)
+            .toString());
+        assertEquals("123456,78", Geldbetrag.getGeldbetrag(12345678)
+            .toString());
     }
-    
+
     @Test
     public void testeGeldbetragString()
     {
@@ -201,16 +213,16 @@ public class GeldbetragTest
         assertFalse(Geldbetrag.istGeldbetrag("31474836,00"));
     }
 
-//  Falls wir auf Exceptions testen wollen
-//
-//    @Rule
-//    public ExpectedException exception = ExpectedException.none();
-//    
-//    @Test
-//    public void testeOverflow()
-//    {
-//        exception.expect(IllegalArgumentException.class);
-//        [Hier einfügen, was zu einer ArithmeticException führt, also Integer overflow]
-//
-//    }
+    //  Falls wir auf Exceptions testen wollen
+    //
+    //    @Rule
+    //    public ExpectedException exception = ExpectedException.none();
+    //    
+    //    @Test
+    //    public void testeOverflow()
+    //    {
+    //        exception.expect(IllegalArgumentException.class);
+    //        [Hier einfügen, was zu einer ArithmeticException führt, also Integer overflow]
+    //
+    //    }
 }
